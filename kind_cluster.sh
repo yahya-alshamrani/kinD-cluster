@@ -94,9 +94,23 @@ destroy() {
   podman system reset -f
 }
 
+up() {
+  podman network disconnect macvlan istio-lab-control-plane
+  podman network disconnect macvlan istio-lab-worker 
+  podman start istio-lab-control-plane  
+  podman start istio-lab-worker
+  podman network connect macvlan istio-lab-control-plane
+  podman network connect macvlan istio-lab-worker 
+}
+
+down() {
+  podman stop istio-lab-control-plane  
+  podman stop istio-lab-worker
+}
+
 # Check if an argument is provided
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 {create|destroy}"
+    echo "Usage: $0 {create|destroy|up|down}"
     exit 1
 fi
 
@@ -107,6 +121,12 @@ case "$1" in
         ;;
     destroy)
         destroy
+        ;;
+    up)
+        up
+        ;;
+    down)
+        down
         ;;
     *)
         echo "Invalid argument. Usage: $0 {create|destroy}"
