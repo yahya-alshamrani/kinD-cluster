@@ -36,6 +36,7 @@ EOF
   if [[ $OS == 'rhel' ]]; then
     if ! yum module list --installed | grep -q "^container-tools"; then
       yum module install -y container-tools
+      systemctl enable --now netavark-dhcp-proxy.service
     fi
   else
     echo "Use RHEL!" && exit 169
